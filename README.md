@@ -94,7 +94,7 @@ duelists: Vee 1829, Lycan 1809, game8breaker 1802 (report in `data/report.md`).
 /lboard <name>                     another player's stats (online name or stored name)
 ```
 
-Admin (`Power.Generic`): `/lboard on|off` (tracking), `/lboard reload`, `/lboard reset confirm`
+Admin (`Power.Generic`): `/lboard on|off` or `/lboard enabled on|off` (tracking), `/lboard reload`, `/lboard reset confirm`
 (new season: backup + wipe FPS stats; commander ratings are reset with `!elo reset confirm`).
 
 Menu navigation hooks `Event_Chat.OnRequestPlayerChat` like `/buy`; `/1`-`/4` are consumed only
