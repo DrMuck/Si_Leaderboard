@@ -1,8 +1,12 @@
 # Si_Leaderboard
 
-Per-faction leaderboards for Silica dedicated servers (MelonLoader, Mono server build 1.0.2):
+Per-faction leaderboards for Silica dedicated servers (MelonLoader, Mono server):
 top 10 commanders and top 10 FPS players for Sol, Centauri, Alien and overall, plus personal
 stats and ranks, all through the `/lboard` chat menu.
+
+Supported game versions: the Steam **default** branch (0.9.47) and the **test** branch (1.0.2).
+The source is the same for both; only the reference DLLs differ. Git branch `master` is built
+against the default branch, git branch `test` against the test branch (see Build and deploy).
 
 ## Where the numbers come from
 
@@ -114,10 +118,19 @@ data/                  seed + report from the Serverdata logs
 
 ```
 cd Si_Leaderboard
-dotnet build -c Release
-copy bin\Release\netstandard2.1\Si_Leaderboard.dll "<server>\Mods\"
+dotnet build -c Release                          (Steam default branch -> bin\Release\default\)
+dotnet build -c Release -p:SilicaBranch=test     (Steam test branch    -> bin\Release\test\)
+copy bin\Release\default\Si_Leaderboard.dll "<server>\Mods\"
 copy data\stats.json "<server>\UserData\cfg\Leaderboard\"      (optional seed)
 ```
+
+`include/default` and `include/test` hold the reference DLLs of the respective Silica branch
+(SilicaCore.dll + Unity modules from that server's Silica_Data\Managed, MelonLoader net6
+`MelonLoader.dll` + `0Harmony.dll`, `Newtonsoft.Json.dll`, `Si_AdminMod.dll`). `SilicaBranch`
+defaults to `default` on git `master` and to `test` on git `test`. Both builds passed a
+Mono.Cecil reference check against both game versions on 2026-10-20 (the two hooks,
+`MP_Strategy.OnUnitDestroyed(Unit, GameObject)` / `OnStructureDestroyed(Structure, GameObject)`,
+and `MusicJukeboxHandler.OnGameStarted/OnGameEnded` have the same signatures in 0.9.47 and 1.0.2).
 
 Rebuild the seed:
 
@@ -134,6 +147,7 @@ data.
 
 ## Status
 
-Built and deployed 2026-10-20 to the local server while it was stopped. Not yet exercised in a
-live round; first things to check in the MelonLoader log: "[LB] Registered /lboard" and that a
-kill between two players shows up in `/lboard me`.
+Built 2026-10-20 for both Silica branches; the default-branch build is deployed to the local
+server (which went back to the default branch the same day). Not yet exercised in a live round;
+first things to check in the MelonLoader log: "[LB] Registered /lboard" and that a kill between
+two players shows up in `/lboard me`.
