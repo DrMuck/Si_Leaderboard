@@ -10,7 +10,7 @@
    /lboard fps [sol|cent|alien|all]      FPS top list directly
    /lboard me                            own stats and ranks
    /lboard <name>                        another player's stats
-   admin (Power.Generic): /lboard reset confirm | /lboard reload | /lboard on|off
+   admin (Power.Generic): /lboard reset confirm | /lboard reload | /lboard on|off | /lboard enabled on|off
 
  Navigation uses Event_Chat.OnRequestPlayerChat like Si_Buy, so /1-/N are consumed only while
  this menu is open. Opening /buy or /b while the menu is open closes it silently.
@@ -138,8 +138,16 @@ namespace Si_Leaderboard
 
             switch (sub)
             {
-                case "on": case "off": case "reload": case "reset":
+                case "on": case "off": case "enabled": case "reload": case "reset":
                     if (!IsAdmin(caller)) { Say(caller, "Admin only."); return; }
+                    // "enabled on|off" = switch alias for the on/off words (used by Si_ModUI; "on"/"off" keep working).
+                    if (sub == "enabled")
+                    {
+                        string en = rest.Trim().ToLowerInvariant();
+                        if (en == "on" || en == "1" || en == "true") sub = "on";
+                        else if (en == "off" || en == "0" || en == "false") sub = "off";
+                        else { Say(caller, "Leaderboard tracking " + (Cfg.Enabled ? "ON" : "OFF") + "."); return; }
+                    }
                     if (sub == "on") { Cfg.Enabled = true; ConfigStore.Save(Cfg); Say(caller, "Leaderboard tracking ON."); }
                     else if (sub == "off") { Cfg.Enabled = false; ConfigStore.Save(Cfg); Say(caller, "Leaderboard tracking OFF (lists still readable)."); }
                     else if (sub == "reload") { Db.Load(); Say(caller, $"Stats reloaded: {Db.Data.players.Count} players."); }
