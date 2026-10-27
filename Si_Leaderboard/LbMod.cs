@@ -26,7 +26,7 @@ namespace Si_Leaderboard
 {
     public partial class LbMod : MelonMod
     {
-        public const string Version = "0.1.3";
+        public const string Version = "0.1.4";
         public static LbConfig Cfg = new LbConfig();
         public static StatsDb Db = null!;
         public static EloBridge Elo = null!;
